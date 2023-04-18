@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:paddingVertical="15dp"
+    android:paddingHorizontal="14dp"
+    android:elevation="4dp"
+    android:orientation="vertical"
+    android:background="@drawable/bg_rectangle_white"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_success"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center"
+        app:lottie_rawRes="@raw/success"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        android:visibility="gone"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_error"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center"
+        app:lottie_rawRes="@raw/error"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        android:layout_gravity="center"
+        tools:text="SUCCESS"
+        android:fontFamily="@font/poppins_bold"
+        android:textSize="12sp"
+        android:layout_marginTop="6dp"
+        android:layout_marginHorizontal="46dp"/>
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="12dp"
+        tools:text="Receive your check out successfully."
+        android:layout_gravity="center"
+        android:fontFamily="@font/poppins"
+        android:textSize="12sp"
+        android:layout_marginTop="6dp"
+        android:textColor="@color/black_opacity"
+        android:layout_marginHorizontal="46dp"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_dismiss"
+        android:layout_width="wrap_content"
+        android:layout_height="32sp"
+        android:text="@string/ok"
+        android:gravity="center"
+        android:paddingVertical="4dp"
+        android:paddingHorizontal="28dp"
+        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:layout_marginTop="18dp"
+        android:textSize="14sp"
+        android:background="@drawable/bg_green"/>
+
+</LinearLayout>
