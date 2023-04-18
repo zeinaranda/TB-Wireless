@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".HomeActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginVertical="16sp"
+        android:text="@string/absensi_membutuhkan_info_lokasi"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:contentDescription="avatar"
+        app:srcCompat="@drawable/baseline_account_circle_24" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="16sp"
+        android:text="@string/nama_mahasiswa"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="22sp"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="32sp"
+        android:text="@string/nim_mahasiswa"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/check_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:text="@string/check_in"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:background="@drawable/home_check_in_button"
+        android:textStyle="bold" />
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/check_out"
+        android:background="@drawable/home_check_out_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:text="@string/check_out"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+</LinearLayout>

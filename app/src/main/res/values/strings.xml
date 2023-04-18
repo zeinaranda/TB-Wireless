@@ -2,4 +2,9 @@
     <string name="app_name">testing wireless</string>
     <string name="title_activity_maps">MapsActivity</string>
     <string name="ok">OK</string>
+    <string name="absensi_membutuhkan_info_lokasi">Absensi Membutuhkan Info Lokasi</string>
+    <string name="nama_mahasiswa">Nama Mahasiswa</string>
+    <string name="nim_mahasiswa">NIM Mahasiswa</string>
+    <string name="check_in">Check In</string>
+    <string name="check_out">Check Out</string>
 </resources>
