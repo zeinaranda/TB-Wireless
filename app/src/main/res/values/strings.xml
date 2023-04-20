@@ -8,4 +8,10 @@
     <string name="check_in">Check In</string>
     <string name="check_out">Check Out</string>
     <string name="copyright">"Copyright © 2023 Teknik Informatika  Universitas Palangka Raya "</string>
+    <string name="jurusan">Jurusan</string>
+    <string name="longtitude">Longtitude</string>
+    <string name="lokasi">Lokasi :</string>
+    <string name="longtitude1">Longtitude :</string>
+    <string name="latitude1">Latitude :</string>
+    <string name="latitude">Latitude</string>
 </resources>

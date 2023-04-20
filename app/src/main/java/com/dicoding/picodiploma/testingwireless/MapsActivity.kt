@@ -4,14 +4,18 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -21,17 +25,22 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityMapsBinding
+import com.dicoding.picodiploma.testingwireless.databinding.BottomSheetBinding
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CircleOptions
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var binding: ActivityMapsBinding
     private lateinit var geofencingClient: GeofencingClient
+    private lateinit var bottomSheetDialog: BottomSheetDialog
+    private var isInsideGeofence = false
+
 
     private val centerLat = -2.215963
     private val centerLng = 113.898537
@@ -59,6 +68,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
+
+
         mMap = googleMap
 
         mMap.uiSettings.isZoomControlsEnabled = true
@@ -78,6 +89,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         getMyLocation()
         addGeofence()
+
     }
 
     private val requestBackgroundLocationPermissionLauncher =
@@ -139,11 +151,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val geofence = Geofence.Builder()
             .setRequestId("kampus")
-            .setCircularRegion(
-                centerLat,
-                centerLng,
-                geofenceRadius.toFloat()
-            )
+            .setCircularRegion(centerLat, centerLng, geofenceRadius.toFloat())
             .setExpirationDuration(Geofence.NEVER_EXPIRE)
             .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_DWELL or Geofence.GEOFENCE_TRANSITION_ENTER)
             .setLoiteringDelay(5000)
@@ -159,16 +167,41 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent).run {
                     addOnSuccessListener {
                         showToast("Geofencing added")
-                    }
-                    addOnFailureListener {
-                        showToast("Geofencing not added : ${it.message}")
+                        mMap.setOnMyLocationChangeListener { location ->
+                            val latLng = LatLng(location.latitude, location.longitude)
+                            val distance = FloatArray(1)
+                            Location.distanceBetween(
+                                centerLat,
+                                centerLng,
+                                location.latitude,
+                                location.longitude,
+                                distance
+                            )
+                            if (distance[0] <= geofenceRadius) {
+                                if (!isInsideGeofence) {
+                                    showBottomSheet()
+                                    isInsideGeofence = true
+                                }
+                            } else {
+                                isInsideGeofence = false
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
+
     private fun showToast(text: String) {
         Toast.makeText(this@MapsActivity, text, Toast.LENGTH_SHORT).show()
     }
+        private fun showBottomSheet() {
+            val bottomSheetBinding = BottomSheetBinding.inflate(LayoutInflater.from(this))
+
+            bottomSheetDialog = BottomSheetDialog(this)
+            bottomSheetDialog.setContentView(bottomSheetBinding.root)
+            bottomSheetDialog.show()
+        }
+
 }
