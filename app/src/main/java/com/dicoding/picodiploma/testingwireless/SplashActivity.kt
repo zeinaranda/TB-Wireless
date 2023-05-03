@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import com.dicoding.picodiploma.testingwireless.databinding.ActivitySplashBinding
+import com.dicoding.picodiploma.testingwireless.utils.Constant
 
 class SplashActivity : AppCompatActivity() {
     //private lateinit var pref: AuthPreferences
@@ -17,7 +18,16 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
         supportActionBar?.hide()
         //moveToMainActivity()
+
+        Handler().postDelayed({
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent) // Pindah ke Home Activity setelah 3 detik
+            finish()
+        }, Constant.SPLASH_TIME)
+
     }
+
+}
 
 //    private fun moveToMainActivity() {
 //        pref = AuthPreferences(this)
@@ -31,4 +41,3 @@ class SplashActivity : AppCompatActivity() {
 //            }
 //        }, Constant.SPLASH_TIME)
 //    }
-}
