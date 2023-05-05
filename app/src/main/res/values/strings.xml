@@ -43,4 +43,11 @@
     <string name="logout">Log Out</string>
     <string name="history">History</string>
     <string name="link_register">Register Now!</string>
+    <string name="tanggal">Tanggal</string>
+    <string name="txt_jurusan">Jurusan :</string>
+    <string name="txt_latitude">Latitude :</string>
+    <string name="txt_long">Longtitude :</string>
+    <string name="register_now">Register Now</string>
+    <string name="masukkan_nama">Insert Name</string>
+    <string name="masukkan_nim">Insert NIM</string>
 </resources>
