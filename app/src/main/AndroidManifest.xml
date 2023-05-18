@@ -19,10 +19,11 @@
         tools:targetApi="31">
         <activity
             android:name=".HistoryActivity"
-            android:exported="false" />
+            android:exported="false"/>
         <activity
             android:name=".RegisterActivity"
-            android:exported="false">
+            android:exported="false"
+            android:parentActivityName=".LoginActivity">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -68,12 +69,13 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBUKn-1r3qaFL3oFfnV9O00jN6W3sEY-qw" />
+            android:value="AIzaSyDC2U9mcFSbhdbAwdi48FyDuwYZIL-5Cm4" />
 
         <activity
             android:name=".MapsActivity"
-            android:exported="false"
-            android:label="@string/title_activity_maps" />
+            android:exported="true"
+            android:label="@string/title_activity_maps"
+            android:parentActivityName=".HomeActivity"/>
     </application>
 
 </manifest>
