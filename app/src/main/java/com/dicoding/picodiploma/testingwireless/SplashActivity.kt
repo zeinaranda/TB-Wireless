@@ -21,12 +21,12 @@ class SplashActivity : AppCompatActivity() {
         supportActionBar?.hide()
         moveToMainActivity()
 
-        Handler().postDelayed({
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent) // Pindah ke Home Activity setelah 3 detik
-            finish()
-        }, Constant.SPLASH_TIME)
-
+//        Handler().postDelayed({
+//            val intent = Intent(this, LoginActivity::class.java)
+//            startActivity(intent) // Pindah ke Home Activity setelah 3 detik
+//            finish()
+//        }, Constant.SPLASH_TIME)
+//
     }
 
 

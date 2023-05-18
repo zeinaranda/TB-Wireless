@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.dicoding.picodiploma.testingwireless.Model.User
 import com.dicoding.picodiploma.testingwireless.Preference.AuthPreferences
 import com.dicoding.picodiploma.testingwireless.ViewModel.LoginViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.LoginViewModelFactory
@@ -27,6 +28,7 @@ class LoginActivity : AppCompatActivity() {
         preferences = AuthPreferences(this)
 
         initAction()
+
 
         binding.tvToRegister.setOnClickListener {
             val myIntent = Intent(this, RegisterActivity::class.java)
@@ -56,15 +58,17 @@ class LoginActivity : AppCompatActivity() {
                     is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
                         binding.progressBar.visibility = View.GONE
 
-//                        val user = User(
-//                            response.data.loginResult.email,
-//                            response.data.loginResult.password,
-//                            response.data.loginResult.nama,
-//                            response.data.loginResult.nim,
-//                            response.data.loginResult.userId
-//                        )
-//                        preferences.setUser(user)
+                        val user = User(
+                            response.data.data.email,
+                            response.data.data.password,
+                            response.data.data.nama,
+                            response.data.data.nim,
+                            response.data.data.userId
+                        )
+                        preferences.setUser(user)
                         preferences.setStatusLogin(true)
+                        val savedUser = preferences.setUser(user)
+                        Log.i("savedUser", savedUser.toString())
                         startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                         finish()
                         Toast.makeText(applicationContext, "Login Berhasil", Toast.LENGTH_SHORT)

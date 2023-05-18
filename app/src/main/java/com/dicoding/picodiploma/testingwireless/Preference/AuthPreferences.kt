@@ -8,6 +8,7 @@ class AuthPreferences(context: Context) {
     fun setUser(value: User) {
         val editor = preferences.edit()
         editor.putString(NAME, value.nama)
+        editor.putString(NIM, value.nim)
         editor.putString(EMAIL, value.email)
         editor.putString(ID, value.userId)
         editor.apply()
@@ -23,11 +24,31 @@ class AuthPreferences(context: Context) {
         return preferences.getBoolean(LOGIN, false)
     }
 
+    fun getId(): String? {
+        return preferences.getString(ID, "")
+    }
+
+    fun getUser(): User =
+        User(
+            userId = preferences.getString(ID, "").toString(),
+            nama = preferences.getString(NAME, "").toString(),
+            nim = preferences.getString(NIM, "").toString(),
+            email = preferences.getString(EMAIL, "").toString(),
+            password = preferences.getString(PASSWORD, "").toString()
+        )
+
+    fun logout() {
+        val editor = preferences.edit()
+        editor.clear().apply()
+    }
+
     companion object {
         private const val PREFS_NAME = "prefs_name"
         private const val ID = "id"
-        private const val NAME = "name"
+        private const val NAME = "nama"
+        private const val NIM = "nim"
         private const val EMAIL = "email"
+        private const val PASSWORD = "password"
         private const val LOGIN = "login"
     }
 }

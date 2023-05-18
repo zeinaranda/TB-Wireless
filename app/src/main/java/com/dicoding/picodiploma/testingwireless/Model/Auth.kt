@@ -1,28 +1,29 @@
 package com.dicoding.picodiploma.testingwireless.Model
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
 data class Auth (
-    val loginResult: User,
-    val msg: String,
-    val status: Boolean,
-    val token: String,
-    val id_user: Int
-    )
+    var status : Int,
+    var message: String,
+    var data : User
+)
 
-    data class User(
-        @field:SerializedName("email")
-        var email: String,
+@Parcelize
+data class User(
+    @field:SerializedName("email")
+    var email: String,
 
-        @field:SerializedName("password")
-        var password: String,
+    @field:SerializedName("password")
+    var password: String,
 
-        @field:SerializedName("nama")
-        var nama: String? = null,
+    @field:SerializedName("nama")
+    var nama: String? = null,
 
-        @field:SerializedName("nim")
-        var nim: String? = null,
+    @field:SerializedName("nim")
+    var nim: String? = null,
 
-        @field:SerializedName("id_user")
-        var userId: String? = null,
-    )
+    @field:SerializedName("id")
+    var userId: String? = null,
+) : Parcelable

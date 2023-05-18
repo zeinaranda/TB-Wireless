@@ -17,13 +17,12 @@ class UserRepository(private val apiService: ApiService) {
         liveData {
             emit(com.dicoding.picodiploma.testingwireless.utils.Result.Loading)
             val responseLogin = apiService.loginUser(User(email,password))
-            val responseUser = apiService.getStudent(responseLogin.id_user)
-            Log.i("resultnya",responseUser.toString())
+
             try {
-                if (responseLogin.status){
+                if (responseLogin.status==1){
                     emit(com.dicoding.picodiploma.testingwireless.utils.Result.Success(responseLogin))
                 } else {
-                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(responseLogin.msg))
+                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(responseLogin.message))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
