@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.dicoding.picodiploma.testingwireless.Model.Auth
+import com.dicoding.picodiploma.testingwireless.Model.Location
 import com.dicoding.picodiploma.testingwireless.Model.User
 import com.dicoding.picodiploma.testingwireless.Network.ApiService
 import java.lang.Exception
@@ -40,6 +41,17 @@ class UserRepository(private val apiService: ApiService) {
             emit(com.dicoding.picodiploma.testingwireless.utils.Result.Loading)
             try {
                 val response = apiService.insertUser(User(email,password, nama, nim))
+                emit(com.dicoding.picodiploma.testingwireless.utils.Result.Success(response))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(e.message.toString()))
+            }
+        }
+    fun getMarker(): LiveData<com.dicoding.picodiploma.testingwireless.utils.Result<Location>> =
+        liveData {
+            emit(com.dicoding.picodiploma.testingwireless.utils.Result.Loading)
+            try {
+                val response = apiService.getLocation()
                 emit(com.dicoding.picodiploma.testingwireless.utils.Result.Success(response))
             } catch (e: Exception) {
                 e.printStackTrace()

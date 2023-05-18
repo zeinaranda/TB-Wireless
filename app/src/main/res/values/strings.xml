@@ -47,6 +47,8 @@
     <string name="txt_jurusan">Jurusan :</string>
     <string name="txt_latitude">Latitude :</string>
     <string name="txt_long">Longtitude :</string>
+    <string name="longitude1">Longitude :</string>
+    <string name="longitude">Longitude</string>
     <string name="register_now">Register Now</string>
     <string name="masukkan_nama">Insert Name</string>
     <string name="masukkan_nim">Insert NIM</string>
