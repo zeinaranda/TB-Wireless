@@ -24,6 +24,11 @@ interface ApiService {
     @GET("/view/user/home")
     fun getDetailUser(@Query("id_user") userId: String): Call<Home>
 
+    @GET("maps/get_all")
+    suspend fun getLocation(
+    ): com.dicoding.picodiploma.testingwireless.Model.Location
+
+
     //        @GET("home_user")
 //        fun getStudent(@retrofit2.http.Body id_user: Int?): Call<Student>
     @HTTP(method = "GET", path = "home_user", hasBody = true)

@@ -78,11 +78,11 @@ class HomeActivity : AppCompatActivity() {
 //            getLogout()
 //            this.finish()
 //        }
-//        binding.history.setOnClickListener {
-//            val intent = Intent(this, HistoryActivity::class.java)
-//            startActivity(intent)
-//            finish()
-//        }
+        binding.checkIn.setOnClickListener {
+            val intent = Intent(this, MapsActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
