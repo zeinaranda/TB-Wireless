@@ -50,4 +50,6 @@
     <string name="register_now">Register Now</string>
     <string name="masukkan_nama">Insert Name</string>
     <string name="masukkan_nim">Insert NIM</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 </resources>
