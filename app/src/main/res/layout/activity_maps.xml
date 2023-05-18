@@ -21,6 +21,15 @@
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/loading" />
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
@@ -29,8 +38,8 @@
         app:layout_constraintBottom_toTopOf="@id/bottom_sheet"
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintVertical_chainStyle="packed"
         tools:context=".MapsActivity" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,7 +51,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:background="@drawable/bg_bottom_sheet_white"
         android:layout_below="@id/map"
-        android:paddingBottom="32dp">
+        android:paddingBottom="24dp">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_check"
@@ -67,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/poppins"
             android:text="Diluar Area Absensi"
             android:textColor="@color/black"
@@ -109,7 +118,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:fontFamily="@font/poppins"
             android:text="@string/lokasi"
             android:textColor="@color/black"

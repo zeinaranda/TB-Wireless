@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.dicoding.picodiploma.testingwireless.Model.Body
 import com.dicoding.picodiploma.testingwireless.Model.Home
@@ -27,7 +29,6 @@ class HomeActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        private const val RESTAURANT_ID = "4"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,8 +36,12 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
         val drawerLayout : DrawerLayout = findViewById(R.id.drawerLayout)
         val navView : NavigationView = findViewById(R.id.nav_view)
+
+        toolbar.title = "Home"
+        setSupportActionBar(toolbar)
 
         toggle = ActionBarDrawerToggle(this,drawerLayout,R.string.open,R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -47,15 +52,14 @@ class HomeActivity : AppCompatActivity() {
         navView.setNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.nav_home -> {
-                    val i = Intent(this, HomeActivity::class.java)
-                    startActivity(i)
-                    finish()
+                    drawerLayout.closeDrawer(navView)
                     true
                 }
                 R.id.nav_history -> {
+                    drawerLayout.closeDrawer(navView)
                     val i = Intent(this, HistoryActivity::class.java)
                     startActivity(i)
-                    finish()
+//                    finish()
                     true
                 }
                 R.id.nav_logout -> {
@@ -81,7 +85,7 @@ class HomeActivity : AppCompatActivity() {
         binding.checkIn.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
-            finish()
+//            finish()
         }
     }
 
@@ -93,6 +97,19 @@ class HomeActivity : AppCompatActivity() {
 
         return super.onOptionsItemSelected(item)
     }
+
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Keluar dari Aplikasi")
+        builder.setMessage("Apakah Anda yakin ingin keluar?")
+        builder.setPositiveButton("Ya") { _, _ ->
+            super.onBackPressed()
+        }
+        builder.setNegativeButton("Tidak", null)
+        val dialog = builder.create()
+        dialog.show()
+    }
+
 
     private fun findRestaurant(userId : String) {
         val client = ApiConfig.getApiService().getDetailUser(userId)
