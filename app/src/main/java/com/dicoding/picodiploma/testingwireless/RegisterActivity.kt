@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.widget.Toolbar
 import com.dicoding.picodiploma.testingwireless.ViewModel.RegisterViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.RegisterViewModelFactory
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityRegisterBinding
@@ -20,6 +21,10 @@ class RegisterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.title = "Register"
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initAction()
 
         binding.tvToLogin.setOnClickListener {

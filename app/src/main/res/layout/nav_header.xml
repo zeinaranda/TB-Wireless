@@ -20,7 +20,7 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:fontFamily="serif"
+        android:textFontWeight="600"
         android:gravity="center"
         android:text="@string/copyright"
         android:textColor="@color/black_opacity"

@@ -7,6 +7,8 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import com.dicoding.picodiploma.testingwireless.Model.User
 import com.dicoding.picodiploma.testingwireless.Preference.AuthPreferences
 import com.dicoding.picodiploma.testingwireless.ViewModel.LoginViewModel
@@ -24,6 +26,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        val toolbar: Toolbar = findViewById(R.id.toolbar)
+        toolbar.title = "Login"
+        setSupportActionBar(toolbar)
 
         preferences = AuthPreferences(this)
 
@@ -33,9 +38,20 @@ class LoginActivity : AppCompatActivity() {
         binding.tvToRegister.setOnClickListener {
             val myIntent = Intent(this, RegisterActivity::class.java)
             startActivity(myIntent)
-            finish()
         }
 
+    }
+
+    override fun onBackPressed() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Keluar dari Aplikasi")
+        builder.setMessage("Apakah Anda yakin ingin keluar?")
+        builder.setPositiveButton("Ya") { _, _ ->
+            super.onBackPressed()
+        }
+        builder.setNegativeButton("Tidak", null)
+        val dialog = builder.create()
+        dialog.show()
     }
 
     private fun initAction() {
