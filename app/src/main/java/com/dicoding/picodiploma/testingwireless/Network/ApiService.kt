@@ -1,9 +1,6 @@
 package com.dicoding.picodiploma.testingwireless.Network
 
-import com.dicoding.picodiploma.testingwireless.Model.Auth
-import com.dicoding.picodiploma.testingwireless.Model.History
-import com.dicoding.picodiploma.testingwireless.Model.Home
-import com.dicoding.picodiploma.testingwireless.Model.User
+import com.dicoding.picodiploma.testingwireless.Model.*
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -32,7 +29,15 @@ interface ApiService {
     @GET("/view/user/riwayat")
     fun getHistory(@Query("id_user") userId: String): Call<History>
 
+    @POST("user/checkin")
+    suspend fun checkIn(
+        @retrofit2.http.Body check: CheckBody?
+    ): Check
 
+    @POST("user/checkout")
+    suspend fun checkOut(
+        @retrofit2.http.Body check: CheckBody?
+    ): Check
 
     //        @GET("home_user")
 //        fun getStudent(@retrofit2.http.Body id_user: Int?): Call<Student>

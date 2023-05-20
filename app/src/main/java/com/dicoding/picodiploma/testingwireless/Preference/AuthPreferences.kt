@@ -1,6 +1,8 @@
 package com.dicoding.picodiploma.testingwireless.Preference
 
 import android.content.Context
+import com.dicoding.picodiploma.testingwireless.Model.Check
+import com.dicoding.picodiploma.testingwireless.Model.CheckBody
 import com.dicoding.picodiploma.testingwireless.Model.User
 
 class AuthPreferences(context: Context) {
@@ -41,6 +43,36 @@ class AuthPreferences(context: Context) {
         val editor = preferences.edit()
         editor.clear().apply()
     }
+    fun setCheck(value: CheckBody) {
+        val editor = preferences.edit()
+        editor.putString(ID, value.id_user)
+        editor.putString(ID_MAPS, value.id_maps)
+
+        editor.apply()
+    }
+
+    fun getCheck(): CheckBody =
+        CheckBody(
+            id_user = preferences.getString(ID, "").toString(),
+            id_maps = preferences.getString(ID_MAPS, "").toString(),
+        )
+    fun setStatusCheck(value: Boolean) {
+        val editor = preferences.edit()
+        editor.putBoolean(CHECK, value)
+        editor.apply()
+    }
+
+    fun getStatusCheck(): Boolean {
+        return preferences.getBoolean(CHECK, false)
+    }
+
+    fun getIdLoc(): String? {
+        return preferences.getString(ID_MAPS, "")
+    }
+    fun checkOut() {
+        val editor = preferences.edit()
+        editor.clear().apply()
+    }
 
     companion object {
         private const val PREFS_NAME = "prefs_name"
@@ -50,5 +82,7 @@ class AuthPreferences(context: Context) {
         private const val EMAIL = "email"
         private const val PASSWORD = "password"
         private const val LOGIN = "login"
+        private const val CHECK = "check"
+        private const val ID_MAPS = "id_wirelessmaps"
     }
 }
