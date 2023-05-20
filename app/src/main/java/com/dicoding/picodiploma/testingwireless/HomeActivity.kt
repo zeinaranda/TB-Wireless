@@ -34,6 +34,7 @@ import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.properties.Delegates
 
 class HomeActivity : AppCompatActivity() {
 
@@ -42,6 +43,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var preferences: AuthPreferences
     private lateinit var userId: String
     private lateinit var mapsId: String
+    private var statusCheck by Delegates.notNull<Boolean>()
     private val viewModel: HomeViewModel by viewModels {
         HomeViewModelFactory.getInstance(this)
     }
@@ -96,7 +98,7 @@ class HomeActivity : AppCompatActivity() {
         userId = preferences.getId()!!
         findRestaurant(userId)
 
-        val statusCheck = preferences.getStatusCheck()
+        statusCheck = preferences.getStatusCheck()
 
         binding.checkIn.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
@@ -196,8 +198,10 @@ class HomeActivity : AppCompatActivity() {
 
                         is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
                             binding.progressBar.visibility = View.GONE
-                            preferences.setStatusCheck(false)
                             preferences.checkOut()
+                            preferences.setStatusCheck(false)
+                            statusCheck = preferences.getStatusCheck()
+                            Log.i("masa gak berubah",preferences.getStatusCheck().toString())
                             showDialog(DialogType.SUCCESS,"Anda Telah Check Out")
                             Toast.makeText(
                                 applicationContext,
