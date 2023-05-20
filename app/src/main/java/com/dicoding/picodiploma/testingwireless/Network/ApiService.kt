@@ -24,7 +24,10 @@ interface ApiService {
 
     @GET("maps/get_all")
     suspend fun getLocation(
-    ): com.dicoding.picodiploma.testingwireless.Model.Location
+    ): Location
+
+    @GET("maps/get_online_user")
+    fun getOnlineUsers(): Call<Online>
 
     @GET("/view/user/riwayat")
     fun getHistory(@Query("id_user") userId: String): Call<History>

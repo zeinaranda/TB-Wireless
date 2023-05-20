@@ -54,4 +54,9 @@
     <string name="masukkan_nim">Insert NIM</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="lokasiText">lokasi</string>
+    <string name="namamahasiswa">Nama :</string>
+    <string name="nimmahasiswa">Nim :</string>
+    <string name="lokasimahasiswa">Lokasi :</string>
+    <string name="waktuonline">Waktu Online :</string>
 </resources>

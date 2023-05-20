@@ -1,6 +1,5 @@
 package com.dicoding.picodiploma.testingwireless.Repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.dicoding.picodiploma.testingwireless.Model.*
@@ -56,6 +55,8 @@ class UserRepository(private val apiService: ApiService) {
                 emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(e.message.toString()))
             }
         }
+
+
 
     fun checkIn(
         id_user: String,

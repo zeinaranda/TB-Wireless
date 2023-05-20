@@ -17,26 +17,30 @@ import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import com.dicoding.picodiploma.testingwireless.Adapter.OnlineAdapter
+import com.dicoding.picodiploma.testingwireless.Model.OnlineItem
+import com.dicoding.picodiploma.testingwireless.ViewModel.OnlineViewModel
+import com.dicoding.picodiploma.testingwireless.ViewModel.OnlineViewModelFactory
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityHomeBinding
+import com.dicoding.picodiploma.testingwireless.databinding.ActivityOnlineBinding
 import com.google.android.material.navigation.NavigationView
 
-class HistoryActivity : AppCompatActivity() {
+class OnlineActivity : AppCompatActivity() {
     private lateinit var preferences: AuthPreferences
     lateinit var toggle: ActionBarDrawerToggle
-    private lateinit var binding: ActivityHistoryBinding
-    private lateinit var viewModel: HistoryViewModel
-    private lateinit var adapter: HistoryAdapter
-    private val list = ArrayList<ItemsItem>()
-    private var userId: String? = null
+    private lateinit var binding: ActivityOnlineBinding
+    private lateinit var viewModel: OnlineViewModel
+    private lateinit var adapter: OnlineAdapter
+    private val list = ArrayList<OnlineItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHistoryBinding.inflate(layoutInflater)
+        binding = ActivityOnlineBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawerLayout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-        toolbar.title = "Riwayat Absensi"
+        toolbar.title = "Online Users"
         setSupportActionBar(toolbar)
         toggle = ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close)
         drawerLayout.addDrawerListener(toggle)
@@ -44,7 +48,7 @@ class HistoryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         preferences = AuthPreferences(this)
-        adapter = HistoryAdapter(list)
+        adapter = OnlineAdapter(list)
         adapter.notifyDataSetChanged()
 
         navView.setNavigationItemSelectedListener {
@@ -57,12 +61,12 @@ class HistoryActivity : AppCompatActivity() {
                 }
                 R.id.nav_history -> {
                     drawerLayout.closeDrawer(navView)
+                    val i = Intent(this, HistoryActivity::class.java)
+                    startActivity(i)
                     true
                 }
                 R.id.nav_online -> {
                     drawerLayout.closeDrawer(navView)
-                    val i = Intent(this, OnlineActivity::class.java)
-                    startActivity(i)
                     true
                 }
                 R.id.nav_logout -> {
@@ -77,21 +81,20 @@ class HistoryActivity : AppCompatActivity() {
             true
         }
 
-        viewModel = ViewModelProvider(this, HistoryViewModelFactory(preferences)).get(
-            HistoryViewModel::class.java
+        viewModel = ViewModelProvider(this, OnlineViewModelFactory(preferences)).get(
+            OnlineViewModel::class.java
         )
 
         binding.apply {
-            rvUsers.setHasFixedSize(true)
-            rvUsers.layoutManager = LinearLayoutManager(this@HistoryActivity)
-            rvUsers.adapter = adapter
+            rvOnline.setHasFixedSize(true)
+            rvOnline.layoutManager = LinearLayoutManager(this@OnlineActivity)
+            rvOnline.adapter = adapter
         }
 
-        userId = preferences.getId()
-        viewModel.setStories(userId!!)
-        viewModel.getStories().observe(this, {
+        viewModel.setOnlineUsers()
+        viewModel.getOnlineUsers().observe(this, {
             if (it != null) {
-                adapter.setList(it.sortedByDescending { it.tanggal })
+                adapter.setList(it.sortedBy { it.waktu })
                 showRecyclerList()
             }
         })
@@ -129,7 +132,7 @@ class HistoryActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.setStories(userId!!)
+        viewModel.setOnlineUsers()
     }
 }
 

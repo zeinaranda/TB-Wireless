@@ -1,12 +1,9 @@
 package com.dicoding.picodiploma.testingwireless
 
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
@@ -24,12 +21,9 @@ import com.dicoding.picodiploma.testingwireless.Network.ApiConfig
 import com.dicoding.picodiploma.testingwireless.Preference.AuthPreferences
 import com.dicoding.picodiploma.testingwireless.ViewModel.HomeViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.HomeViewModelFactory
-import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModel
-import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModelFactory
 import com.dicoding.picodiploma.testingwireless.data.DialogType
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityHomeBinding
 import com.dicoding.picodiploma.testingwireless.dialog.PopupDialog
-import com.dicoding.picodiploma.testingwireless.utils.Constant
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -82,6 +76,12 @@ class HomeActivity : AppCompatActivity() {
                     startActivity(i)
                     true
                 }
+                R.id.nav_online -> {
+                    drawerLayout.closeDrawer(navView)
+                    val i = Intent(this, OnlineActivity::class.java)
+                    startActivity(i)
+                    true
+                }
                 R.id.nav_logout -> {
                     preferences.logout()
                     val i = Intent(this, LoginActivity::class.java)
@@ -128,6 +128,7 @@ class HomeActivity : AppCompatActivity() {
         builder.setMessage("Apakah Anda yakin ingin keluar?")
         builder.setPositiveButton("Ya") { _, _ ->
             super.onBackPressed()
+            finish()
         }
         builder.setNegativeButton("Tidak", null)
         val dialog = builder.create()
@@ -201,7 +202,6 @@ class HomeActivity : AppCompatActivity() {
                             preferences.checkOut()
                             preferences.setStatusCheck(false)
                             statusCheck = preferences.getStatusCheck()
-                            Log.i("masa gak berubah",preferences.getStatusCheck().toString())
                             showDialog(DialogType.SUCCESS,"Anda Telah Check Out")
                             Toast.makeText(
                                 applicationContext,
