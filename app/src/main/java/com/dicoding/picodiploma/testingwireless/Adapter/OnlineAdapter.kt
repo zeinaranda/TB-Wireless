@@ -7,6 +7,7 @@ import com.dicoding.picodiploma.testingwireless.Model.ItemsItem
 import com.dicoding.picodiploma.testingwireless.Model.OnlineItem
 import com.dicoding.picodiploma.testingwireless.databinding.HistoryRowBinding
 import com.dicoding.picodiploma.testingwireless.databinding.OnlineRowBinding
+import com.dicoding.picodiploma.testingwireless.utils.DateUtils
 
 class OnlineAdapter(private val listStory: ArrayList<OnlineItem>) : RecyclerView.Adapter<OnlineAdapter.ViewHolder>() {
     private lateinit var onItemClickCallback: OnItemClickCallback
@@ -44,8 +45,7 @@ class OnlineAdapter(private val listStory: ArrayList<OnlineItem>) : RecyclerView
             binding.nama.text = listUser.nama
             binding.nim.text = listUser.nim
             binding.lokasi.text = listUser.jurusan
-            binding.waktu.text = listUser.waktu
-
+            binding.waktu.text = DateUtils.formatDate(listUser.waktu!!)
         }
     }
 
