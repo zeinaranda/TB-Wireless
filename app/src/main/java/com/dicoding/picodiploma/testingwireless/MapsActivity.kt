@@ -25,6 +25,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.dicoding.picodiploma.testingwireless.Model.CheckBody
 import com.dicoding.picodiploma.testingwireless.Model.LatLong
@@ -32,6 +33,7 @@ import com.dicoding.picodiploma.testingwireless.Model.User
 import com.dicoding.picodiploma.testingwireless.Preference.AuthPreferences
 import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModelFactory
+import com.dicoding.picodiploma.testingwireless.data.DialogType
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -41,6 +43,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityMapsBinding
 import com.dicoding.picodiploma.testingwireless.databinding.BottomSheetBinding
+import com.dicoding.picodiploma.testingwireless.databinding.DialogCustomBinding
+import com.dicoding.picodiploma.testingwireless.dialog.PopupDialog
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
@@ -59,7 +63,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var checkInButton: AppCompatButton
     private lateinit var preferences: AuthPreferences
     private lateinit var userId: String
-    private lateinit var mapsId: String
     private lateinit var listJurusan : List<LatLong>
     private val viewModel: MapsViewModel by viewModels {
         MapsViewModelFactory.getInstance(this)
@@ -85,50 +88,33 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             preferences = AuthPreferences(this@MapsActivity)
             userId = preferences.getId()!!
-
+            val statusCheck = preferences.getStatusCheck()
+            val callback = object : PopupDialog.DialogCallback {
+                override fun dismissDialog(dialog: DialogFragment) {
+                    // Tindakan yang ingin dilakukan ketika dialog ditutup
+                    dialog.dismiss()
+                }
+            }
             if (lokasi != null) {
                 jurusanTextView.text = lokasi
                 latitudeTextView.text = latitude
                 longitudeTextView.text = longitude
             }
             checkInButton.setOnClickListener{
-           // check()
                 if (lokasi != null) {
-                    val idLokasi = getIdLokasi(lokasi)
-                    Log.i("Check In","Check in dengan id lokasi $idLokasi")
-
-                    viewModel.getCheck(id_user = userId, id_wirelessmaps = idLokasi)
-                        .observe(this@MapsActivity, { response ->
-                            if (response != null) {
-                                when (response) {
-                                    is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
-                                        binding.progressBar.visibility = View.VISIBLE
-                                    }
-                                    is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
-                                        binding.progressBar.visibility = View.GONE
-                                        val check = CheckBody(
-                                            response.data.data.id_user,
-                                            response.data.data.id_maps
-                                        )
-                                        Log.i("savedCheck", response.data.data.id_maps)
-                                        preferences.setCheck(check)
-                                        preferences.setStatusCheck(true)
-                                        val savedCheck = preferences.setCheck(check)
-                                        Log.i("savedCheck", savedCheck.toString())
-                                        startActivity(Intent(this@MapsActivity, HistoryActivity::class.java))
-                                        finish()
-                                        Toast.makeText(applicationContext, "Check In Berhasil", Toast.LENGTH_SHORT)
-                                            .show()
-                                    }
-                                    is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
-                                        binding.progressBar.visibility = View.GONE
-                                        Toast.makeText(this@MapsActivity, response.error, Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            }
-                        })
+                    if (lokasi != "Diluar Area Absen"){
+                        val idLokasi = getIdLokasi(lokasi)
+                        if (statusCheck == false){
+                            checkIn(userId,idLokasi)
+                        } else {
+                            showDialog(DialogType.ERROR,"Anda Sudah Check In, Silahkan Check Out Terlebih dahulu",callback)
+                        }
+                    } else {
+                        showDialog(DialogType.ERROR,"Anda Diluar Area Absensi",callback)
+                    }
+                } else {
+                    showDialog(DialogType.ERROR,"Anda Diluar Area Absensi",callback)
                 }
-
             }
         }
     }
@@ -146,29 +132,42 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val intentFilter = IntentFilter("my-event")
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter)
+
+        val callback = object : PopupDialog.DialogCallback {
+            override fun dismissDialog(dialog: DialogFragment) {
+                // Tindakan yang ingin dilakukan ketika dialog ditutup
+                dialog.dismiss()
+            }
+        }
+
         jurusanTextView = findViewById(R.id.jurusan)
         latitudeTextView = findViewById(R.id.latitude)
         longitudeTextView = findViewById(R.id.longitude)
         checkInButton = findViewById(R.id.btn_check)
+        checkInButton.setOnClickListener {
+            showDialog(DialogType.ERROR,"Anda Diluar Area Absensi",callback)
+        }
 
-        viewModel.getMarker().observe(this, { response ->
+        viewModel.getMarker().observe(this) { response ->
             if (response != null) {
                 when (response) {
                     is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
+
                     is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
                         binding.progressBar.visibility = View.GONE
                         listJurusan = response.data.data
                         showMarker(listJurusan)
                     }
+
                     is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(this, response.error, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
-        })
+        }
 
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -329,51 +328,62 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         return "Kosong"
     }
 
-    fun check() {
-        preferences = AuthPreferences(this)
-        userId = preferences.getId()!!
-        val lokasi = intent?.getStringExtra("lokasi")
-        val latitude = intent?.getStringExtra("latitude")
-        val longitude = intent?.getStringExtra("longitude")
+    private fun showDialog(type:DialogType,msg:String, callback:PopupDialog.DialogCallback) {
+        val dialogFragment = PopupDialog(type, msg, callback)
+        dialogFragment.show(supportFragmentManager,"PopUpDialog")
+    }
 
-        if (lokasi != null) {
-            jurusanTextView.text = lokasi
-            latitudeTextView.text = latitude
-            longitudeTextView.text = longitude
-        }
-        if (lokasi != null) {
-            val idLokasi = getIdLokasi(lokasi)
-            Log.i("Check In", "Check in dengan id lokasi $idLokasi")
+    fun checkIn(idUser:String,idLokasi:String) {
+        viewModel.getCheck(id_user = idUser, id_wirelessmaps = idLokasi)
+            .observe(this@MapsActivity) { response ->
+                if (response != null) {
+                    when (response) {
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
 
-//            viewModel.getCheck(id_user = userId, id_wirelessmaps = idLokasi)
-//                .observe(this, { response ->
-//                    if (response != null) {
-//                        when (response) {
-//                            is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
-//                                binding.progressBar.visibility = View.VISIBLE
-//                            }
-//                            is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
-//                                binding.progressBar.visibility = View.GONE
-//                                val check = CheckBody(
-//                                    response.data.data.id_user,
-//                                    response.data.data.id_maps
-//                                )
-//                                preferences.setCheck(check)
-//                                preferences.setStatusCheck(true)
-//                                val savedCheck = preferences.setCheck(check)
-//                                Log.i("savedCheck", savedCheck.toString())
-//                                startActivity(Intent(this@MapsActivity, HistoryActivity::class.java))
-//                                finish()
-//                                Toast.makeText(applicationContext, "Check In Berhasil", Toast.LENGTH_SHORT)
-//                                    .show()
-//                            }
-//                            is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
-//                                binding.progressBar.visibility = View.GONE
-//                                Toast.makeText(this, response.error, Toast.LENGTH_SHORT).show()
-//                            }
-//                        }
-//                    }
-//                })
-        }
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            val check = CheckBody(
+                                userId,
+                                idLokasi
+                            )
+                            preferences.setCheck(check)
+                            preferences.setStatusCheck(true)
+                            val callback = object : PopupDialog.DialogCallback {
+                                override fun dismissDialog(dialog: DialogFragment) {
+                                    // Tindakan yang ingin dilakukan ketika dialog ditutup
+                                    startActivity(Intent(this@MapsActivity, HomeActivity::class.java))
+                                    dialog.dismiss()
+                                }
+                            }
+                            showDialog(DialogType.SUCCESS,"Anda Berhasil Check In",callback)
+//                            val savedCheck = preferences.setCheck(check)
+//                            Log.i("savedCheck", savedCheck.toString())
+                            Toast.makeText(
+                                applicationContext,
+                                "Check In Berhasil",
+                                Toast.LENGTH_SHORT)
+                                .show()
+                        }
+
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
+                            binding.progressBar.visibility = View.GONE
+                            val callback = object : PopupDialog.DialogCallback {
+                                override fun dismissDialog(dialog: DialogFragment) {
+                                    // Tindakan yang ingin dilakukan ketika dialog ditutup
+                                    dialog.dismiss()
+                                }
+                            }
+                            showDialog(DialogType.ERROR,response.error,callback)
+                            Toast.makeText(
+                                this@MapsActivity,
+                                response.error,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
     }
 }

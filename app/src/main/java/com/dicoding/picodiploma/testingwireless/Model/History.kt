@@ -27,6 +27,9 @@ data class ItemsItem(
     @field:SerializedName("status")
     val status: String? = null,
 
+    @field:SerializedName("kategori")
+    val kategori: String? = null,
+
     @field:SerializedName("keterangan")
     val keterangan: String? = null,
 

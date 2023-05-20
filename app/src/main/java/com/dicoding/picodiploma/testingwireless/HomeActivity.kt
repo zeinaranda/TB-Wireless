@@ -16,6 +16,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.DialogFragment
 import com.dicoding.picodiploma.testingwireless.Model.Body
 import com.dicoding.picodiploma.testingwireless.Model.CheckBody
 import com.dicoding.picodiploma.testingwireless.Model.Home
@@ -25,7 +26,9 @@ import com.dicoding.picodiploma.testingwireless.ViewModel.HomeViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.HomeViewModelFactory
 import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModelFactory
+import com.dicoding.picodiploma.testingwireless.data.DialogType
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityHomeBinding
+import com.dicoding.picodiploma.testingwireless.dialog.PopupDialog
 import com.dicoding.picodiploma.testingwireless.utils.Constant
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
@@ -75,7 +78,6 @@ class HomeActivity : AppCompatActivity() {
                     drawerLayout.closeDrawer(navView)
                     val i = Intent(this, HistoryActivity::class.java)
                     startActivity(i)
-//                    finish()
                     true
                 }
                 R.id.nav_logout -> {
@@ -94,13 +96,18 @@ class HomeActivity : AppCompatActivity() {
         userId = preferences.getId()!!
         findRestaurant(userId)
 
+        val statusCheck = preferences.getStatusCheck()
+
         binding.checkIn.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
-//            finish()
         }
         binding.checkOut.setOnClickListener {
-//             getCheckout()
+            if (statusCheck) {
+                checkOut()
+            } else {
+                showDialog(DialogType.ERROR,"Anda Belum Check In")
+            }
         }
     }
 
@@ -167,31 +174,48 @@ class HomeActivity : AppCompatActivity() {
                 finish()
             }
         }
+    private fun showDialog(type: DialogType, msg:String) {
+        val callback = object : PopupDialog.DialogCallback {
+            override fun dismissDialog(dialog: DialogFragment) {
+                // Tindakan yang ingin dilakukan ketika dialog ditutup
+                dialog.dismiss()
+            }
+        }
+        val dialogFragment = PopupDialog(type, msg, callback)
+        dialogFragment.show(supportFragmentManager,"PopUpDialog")
+    }
+    private fun checkOut() {
+        mapsId = preferences.getIdLoc()!!
+        viewModel.getCheckOut( id_user = userId, id_wirelessmaps = mapsId)
+            .observe(this) { response ->
+                if (response != null) {
+                    when (response) {
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
 
-
-//    private fun getCheckout() {
-//        mapsId = preferences.getIdLoc()!!
-//        viewModel.getCheckOut( id_wirelessmaps = mapsId)
-//            .observe(this, { response ->
-//                if (response != null) {
-//                    when (response) {
-//                        is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
-//                            binding.progressBar.visibility = View.VISIBLE
-//                        }
-//                        is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
-//                            binding.progressBar.visibility = View.GONE
-//                            Toast.makeText(applicationContext, "Check Out Berhasil", Toast.LENGTH_SHORT)
-//                                .show()
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            preferences.setStatusCheck(false)
+                            preferences.checkOut()
+                            showDialog(DialogType.SUCCESS,"Anda Telah Check Out")
+                            Toast.makeText(
+                                applicationContext,
+                                "Check Out Berhasil",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
 //                            preferences.getCheck().id_maps
-//                            preferences.checkOut()
-//                        }
-//                        is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
-//                            binding.progressBar.visibility = View.GONE
-//                            Toast.makeText(this, response.error, Toast.LENGTH_SHORT).show()
-//                        }
-//                    }
-//                }
-//            })
-//    }
+                        }
+
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(this, response.error, Toast.LENGTH_SHORT).show()
+                            showDialog(DialogType.ERROR,response.error)
+                        }
+                    }
+                }
+            }
+    }
 
 }
