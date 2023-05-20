@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.dicoding.picodiploma.testingwireless.R
 import com.dicoding.picodiploma.testingwireless.data.DialogType
@@ -38,8 +39,18 @@ class PopupDialog (
         super.onViewCreated(view, savedInstanceState)
 
         when(type){
-            DialogType.SUCCESS -> { binding.lottieSuccess.visibility = View.VISIBLE }
-            DialogType.ERROR -> { binding.lottieError.visibility = View.VISIBLE }
+            DialogType.SUCCESS -> {
+                binding.lottieSuccess.visibility = View.VISIBLE
+                val color = ContextCompat.getColor(requireContext(), R.color.green)
+                binding.tvStatus.setTextColor(color)
+                binding.tvStatus.text = "SUCCESS"
+            }
+            DialogType.ERROR -> {
+                binding.lottieError.visibility = View.VISIBLE
+                val color = ContextCompat.getColor(requireContext(), R.color.red)
+                binding.tvStatus.setTextColor(color)
+                binding.tvStatus.text = "ERROR"
+            }
         }
 
         binding.tvMessage.text = message

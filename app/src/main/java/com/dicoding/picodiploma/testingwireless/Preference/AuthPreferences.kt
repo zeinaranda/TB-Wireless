@@ -71,7 +71,8 @@ class AuthPreferences(context: Context) {
     }
     fun checkOut() {
         val editor = preferences.edit()
-        editor.clear().apply()
+        editor.remove("ID_MAPS").apply()
+        editor.remove("CHECK").apply()
     }
 
     companion object {
