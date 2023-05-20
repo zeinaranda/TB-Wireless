@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.dicoding.picodiploma.testingwireless.Model.ItemsItem
 import com.dicoding.picodiploma.testingwireless.databinding.HistoryRowBinding
+import com.dicoding.picodiploma.testingwireless.utils.DateUtils
 
 class HistoryAdapter(private val listStory: ArrayList<ItemsItem>) : RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
     private lateinit var onItemClickCallback: OnItemClickCallback
@@ -29,9 +30,9 @@ class HistoryAdapter(private val listStory: ArrayList<ItemsItem>) : RecyclerView
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         listStory[position].let { viewHolder.bind(it) }
 
-        viewHolder.itemView.setOnClickListener {
-            onItemClickCallback.onItemClicked(listStory[viewHolder.adapterPosition])
-        }
+//        viewHolder.itemView.setOnClickListener {
+//            onItemClickCallback.onItemClicked(listStory[viewHolder.adapterPosition])
+//        }
     }
 
     override fun getItemCount() = listStory.size
@@ -42,7 +43,7 @@ class HistoryAdapter(private val listStory: ArrayList<ItemsItem>) : RecyclerView
             binding.tvStatus.text = listStory.status
             binding.jurusan.text = listStory.jurusan
             binding.tvStatus.text = listStory.kategori
-            binding.tanggal.text = listStory.tanggal
+            binding.tanggal.text = DateUtils.formatDate(listStory.tanggal!!)
             binding.latitude.text = listStory.latitude
             binding.longitude.text = listStory.longitude
 

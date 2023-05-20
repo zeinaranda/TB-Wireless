@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/green"
+    app:cardBackgroundColor="@color/cyan"
     android:layout_gravity="center"
-    android:layout_marginLeft="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginBottom="10dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="20dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     tools:context=".OnlineActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp">
 
         <TextView
             android:id="@+id/textView1"
@@ -40,6 +44,10 @@
             android:textSize="11sp"
             android:textStyle="bold"
             android:textColor="@color/black"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toEndOf="@id/constraintlayout"
             app:layout_constraintStart_toEndOf="@+id/textView1"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -85,6 +93,10 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:text="@string/lokasiText"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toEndOf="@id/constraintlayout"
             android:textSize="11sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -101,7 +113,7 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@id/textView3"/>
+            app:layout_constraintTop_toBottomOf="@id/lokasi"/>
 
         <TextView
             android:id="@+id/waktu"
@@ -117,8 +129,8 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
