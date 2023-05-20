@@ -1,20 +1,32 @@
 package com.dicoding.picodiploma.testingwireless
 
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import com.dicoding.picodiploma.testingwireless.Model.Body
+import com.dicoding.picodiploma.testingwireless.Model.CheckBody
 import com.dicoding.picodiploma.testingwireless.Model.Home
 import com.dicoding.picodiploma.testingwireless.Network.ApiConfig
 import com.dicoding.picodiploma.testingwireless.Preference.AuthPreferences
+import com.dicoding.picodiploma.testingwireless.ViewModel.HomeViewModel
+import com.dicoding.picodiploma.testingwireless.ViewModel.HomeViewModelFactory
+import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModel
+import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModelFactory
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityHomeBinding
+import com.dicoding.picodiploma.testingwireless.utils.Constant
 import com.google.android.material.navigation.NavigationView
 import retrofit2.Call
 import retrofit2.Callback
@@ -26,6 +38,10 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var preferences: AuthPreferences
     private lateinit var userId: String
+    private lateinit var mapsId: String
+    private val viewModel: HomeViewModel by viewModels {
+        HomeViewModelFactory.getInstance(this)
+    }
 
     companion object {
         private const val TAG = "MainActivity"
@@ -78,14 +94,13 @@ class HomeActivity : AppCompatActivity() {
         userId = preferences.getId()!!
         findRestaurant(userId)
 
-//        binding.history.setOnClickListener {
-//            getLogout()
-//            this.finish()
-//        }
         binding.checkIn.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
             startActivity(intent)
 //            finish()
+        }
+        binding.checkOut.setOnClickListener {
+//             getCheckout()
         }
     }
 
@@ -143,11 +158,40 @@ class HomeActivity : AppCompatActivity() {
             binding.tvNim.text = restaurant.nim
         }
     }
-    private fun getLogout() {
-        preferences.logout()
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
-        finish()
-    }
+
+    private fun moveToMainActivity() {
+            if (preferences.getStatusCheck()) {
+                preferences.checkOut()
+            } else {
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            }
+        }
+
+
+//    private fun getCheckout() {
+//        mapsId = preferences.getIdLoc()!!
+//        viewModel.getCheckOut( id_wirelessmaps = mapsId)
+//            .observe(this, { response ->
+//                if (response != null) {
+//                    when (response) {
+//                        is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
+//                            binding.progressBar.visibility = View.VISIBLE
+//                        }
+//                        is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
+//                            binding.progressBar.visibility = View.GONE
+//                            Toast.makeText(applicationContext, "Check Out Berhasil", Toast.LENGTH_SHORT)
+//                                .show()
+//                            preferences.getCheck().id_maps
+//                            preferences.checkOut()
+//                        }
+//                        is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
+//                            binding.progressBar.visibility = View.GONE
+//                            Toast.makeText(this, response.error, Toast.LENGTH_SHORT).show()
+//                        }
+//                    }
+//                }
+//            })
+//    }
 
 }

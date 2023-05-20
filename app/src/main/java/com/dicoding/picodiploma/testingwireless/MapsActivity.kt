@@ -26,7 +26,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.dicoding.picodiploma.testingwireless.Model.CheckBody
 import com.dicoding.picodiploma.testingwireless.Model.LatLong
+import com.dicoding.picodiploma.testingwireless.Model.User
+import com.dicoding.picodiploma.testingwireless.Preference.AuthPreferences
 import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModelFactory
 
@@ -54,6 +57,9 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var latitudeTextView: TextView
     private lateinit var longitudeTextView: TextView
     private lateinit var checkInButton: AppCompatButton
+    private lateinit var preferences: AuthPreferences
+    private lateinit var userId: String
+    private lateinit var mapsId: String
     private lateinit var listJurusan : List<LatLong>
     private val viewModel: MapsViewModel by viewModels {
         MapsViewModelFactory.getInstance(this)
@@ -76,16 +82,53 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
             val lokasi = intent?.getStringExtra("lokasi")
             val latitude = intent?.getStringExtra("latitude")
             val longitude = intent?.getStringExtra("longitude")
+
+            preferences = AuthPreferences(this@MapsActivity)
+            userId = preferences.getId()!!
+
             if (lokasi != null) {
                 jurusanTextView.text = lokasi
                 latitudeTextView.text = latitude
                 longitudeTextView.text = longitude
             }
             checkInButton.setOnClickListener{
+           // check()
                 if (lokasi != null) {
                     val idLokasi = getIdLokasi(lokasi)
                     Log.i("Check In","Check in dengan id lokasi $idLokasi")
+
+                    viewModel.getCheck(id_user = userId, id_wirelessmaps = idLokasi)
+                        .observe(this@MapsActivity, { response ->
+                            if (response != null) {
+                                when (response) {
+                                    is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
+                                        binding.progressBar.visibility = View.VISIBLE
+                                    }
+                                    is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
+                                        binding.progressBar.visibility = View.GONE
+                                        val check = CheckBody(
+                                            response.data.data.id_user,
+                                            response.data.data.id_maps
+                                        )
+                                        Log.i("savedCheck", response.data.data.id_maps)
+                                        preferences.setCheck(check)
+                                        preferences.setStatusCheck(true)
+                                        val savedCheck = preferences.setCheck(check)
+                                        Log.i("savedCheck", savedCheck.toString())
+                                        startActivity(Intent(this@MapsActivity, HistoryActivity::class.java))
+                                        finish()
+                                        Toast.makeText(applicationContext, "Check In Berhasil", Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                    is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
+                                        binding.progressBar.visibility = View.GONE
+                                        Toast.makeText(this@MapsActivity, response.error, Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                        })
                 }
+
             }
         }
     }
@@ -277,7 +320,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         Toast.makeText(this@MapsActivity, text, Toast.LENGTH_SHORT).show()
     }
 
-    private fun getIdLokasi (lokasi:String): String {
+    fun getIdLokasi (lokasi:String): String {
         for (jurusan in listJurusan) {
             if (jurusan.jurusan == lokasi) {
                 return jurusan.id
@@ -286,4 +329,51 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         return "Kosong"
     }
 
+    fun check() {
+        preferences = AuthPreferences(this)
+        userId = preferences.getId()!!
+        val lokasi = intent?.getStringExtra("lokasi")
+        val latitude = intent?.getStringExtra("latitude")
+        val longitude = intent?.getStringExtra("longitude")
+
+        if (lokasi != null) {
+            jurusanTextView.text = lokasi
+            latitudeTextView.text = latitude
+            longitudeTextView.text = longitude
+        }
+        if (lokasi != null) {
+            val idLokasi = getIdLokasi(lokasi)
+            Log.i("Check In", "Check in dengan id lokasi $idLokasi")
+
+//            viewModel.getCheck(id_user = userId, id_wirelessmaps = idLokasi)
+//                .observe(this, { response ->
+//                    if (response != null) {
+//                        when (response) {
+//                            is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
+//                                binding.progressBar.visibility = View.VISIBLE
+//                            }
+//                            is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
+//                                binding.progressBar.visibility = View.GONE
+//                                val check = CheckBody(
+//                                    response.data.data.id_user,
+//                                    response.data.data.id_maps
+//                                )
+//                                preferences.setCheck(check)
+//                                preferences.setStatusCheck(true)
+//                                val savedCheck = preferences.setCheck(check)
+//                                Log.i("savedCheck", savedCheck.toString())
+//                                startActivity(Intent(this@MapsActivity, HistoryActivity::class.java))
+//                                finish()
+//                                Toast.makeText(applicationContext, "Check In Berhasil", Toast.LENGTH_SHORT)
+//                                    .show()
+//                            }
+//                            is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
+//                                binding.progressBar.visibility = View.GONE
+//                                Toast.makeText(this, response.error, Toast.LENGTH_SHORT).show()
+//                            }
+//                        }
+//                    }
+//                })
+        }
+    }
 }

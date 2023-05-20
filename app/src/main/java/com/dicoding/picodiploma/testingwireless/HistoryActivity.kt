@@ -85,7 +85,7 @@ class HistoryActivity : AppCompatActivity() {
         viewModel.setStories(userId!!)
         viewModel.getStories().observe(this, {
             if (it != null) {
-                adapter.setList(it)
+                adapter.setList(it.sortedByDescending { it.tanggal })
                 showRecyclerList()
             }
         })

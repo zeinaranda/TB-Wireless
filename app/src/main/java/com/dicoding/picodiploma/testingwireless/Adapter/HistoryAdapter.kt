@@ -39,6 +39,7 @@ class HistoryAdapter(private val listStory: ArrayList<ItemsItem>) : RecyclerView
     class ViewHolder( private var binding: HistoryRowBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(listStory: ItemsItem) {
+            binding.tvStatus.text = listStory.status
             binding.jurusan.text = listStory.jurusan
             binding.tanggal.text = listStory.tanggal
             binding.latitude.text = listStory.latitude

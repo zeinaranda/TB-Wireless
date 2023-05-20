@@ -3,9 +3,7 @@ package com.dicoding.picodiploma.testingwireless.Repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import com.dicoding.picodiploma.testingwireless.Model.Auth
-import com.dicoding.picodiploma.testingwireless.Model.Location
-import com.dicoding.picodiploma.testingwireless.Model.User
+import com.dicoding.picodiploma.testingwireless.Model.*
 import com.dicoding.picodiploma.testingwireless.Network.ApiService
 import java.lang.Exception
 
@@ -53,6 +51,47 @@ class UserRepository(private val apiService: ApiService) {
             try {
                 val response = apiService.getLocation()
                 emit(com.dicoding.picodiploma.testingwireless.utils.Result.Success(response))
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(e.message.toString()))
+            }
+        }
+
+    fun checkIn(
+        id_user: String,
+        id_wirelessmaps: String,
+
+        ): LiveData<com.dicoding.picodiploma.testingwireless.utils.Result<Check>> =
+        liveData {
+            emit(com.dicoding.picodiploma.testingwireless.utils.Result.Loading)
+            val responseCheck = apiService.checkIn(CheckBody(id_user,id_wirelessmaps))
+
+            try {
+                if (responseCheck.status==1){
+                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Success(responseCheck))
+                } else {
+                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(responseCheck.message))
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(e.message.toString()))
+            }
+        }
+    fun checkOut(
+        id_user: String,
+        id_wirelessmaps: String,
+
+        ): LiveData<com.dicoding.picodiploma.testingwireless.utils.Result<Check>> =
+        liveData {
+            emit(com.dicoding.picodiploma.testingwireless.utils.Result.Loading)
+            val responseCheck = apiService.checkOut(CheckBody(id_user,id_wirelessmaps))
+
+            try {
+                if (responseCheck.status==1){
+                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Success(responseCheck))
+                } else {
+                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(responseCheck.message))
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
                 emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(e.message.toString()))
