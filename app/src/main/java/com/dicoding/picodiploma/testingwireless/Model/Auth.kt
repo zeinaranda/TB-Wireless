@@ -26,4 +26,7 @@ data class User(
 
     @field:SerializedName("id")
     var userId: String? = null,
+
+    @field:SerializedName("status")
+    var status: String? = null,
 ) : Parcelable
