@@ -32,6 +32,7 @@ class PopupDialog (
         val width = (resources.displayMetrics.widthPixels * 0.95).toInt()
         val height = (resources.displayMetrics.heightPixels * 0.70).toInt()
         dialog?.window?.setLayout(width, height)
+        dialog?.setCancelable(false)
         return binding.root
     }
 
@@ -54,7 +55,6 @@ class PopupDialog (
         }
 
         binding.tvMessage.text = message
-
         binding.btnDismiss.setOnClickListener {
             dialogCallback.dismissDialog(this)
         }

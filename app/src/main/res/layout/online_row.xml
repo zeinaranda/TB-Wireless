@@ -28,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
             android:text="@string/nama"
             android:gravity="center"
             android:textSize="14sp"
@@ -48,7 +49,6 @@
             android:text="@string/nim"
             android:textSize="12sp"
             android:textStyle="bold"
-
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@id/nama" />
 
@@ -61,7 +61,6 @@
             android:text="@string/lokasiText"
             android:drawablePadding="4dp"
             android:gravity="center_vertical"
-            android:drawableStart="@drawable/baseline_location_city_24"
             app:layout_constrainedWidth="true"
             app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintHorizontal_bias="0"
@@ -70,7 +69,8 @@
             android:textStyle="bold"
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@id/nim" />
+            app:layout_constraintTop_toBottomOf="@id/nim"
+            app:drawableStartCompat="@drawable/baseline_location_city_24" />
 
         <TextView
             android:id="@+id/waktu"
@@ -78,20 +78,19 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:drawablePadding="4dp"
-            android:drawableStart="@drawable/baseline_access_time_24"
             android:gravity="center_vertical"
             android:text="@string/tanggal"
             android:textSize="11sp"
             android:textStyle="bold"
             android:textColor="@color/black"
             app:layout_constraintStart_toEndOf="@+id/imageView"
-            app:layout_constraintTop_toBottomOf="@id/lokasi" />
+            app:layout_constraintTop_toBottomOf="@id/lokasi"
+            app:drawableStartCompat="@drawable/baseline_access_time_24" />
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_account_circle_24" />

@@ -56,7 +56,7 @@
             android:exported="true" />
 
         <receiver
-            android:name=".GeofenceBroadcastReceiver"
+            android:name=".Receiver.GeofenceBroadcastReceiver"
             android:enabled="true"
             android:exported="true" />
         <!--

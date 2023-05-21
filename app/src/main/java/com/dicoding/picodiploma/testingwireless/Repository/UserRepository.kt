@@ -4,29 +4,32 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.dicoding.picodiploma.testingwireless.Model.*
 import com.dicoding.picodiploma.testingwireless.Network.ApiService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.HttpException
+import retrofit2.Response
 import java.lang.Exception
 
 class UserRepository(private val apiService: ApiService) {
-    fun userLogin(
-        email: String,
-        password: String,
-
-        ): LiveData<com.dicoding.picodiploma.testingwireless.utils.Result<Auth>> =
-        liveData {
-            emit(com.dicoding.picodiploma.testingwireless.utils.Result.Loading)
-            val responseLogin = apiService.loginUser(User(email,password))
-
-            try {
-                if (responseLogin.status==1){
-                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Success(responseLogin))
-                } else {
-                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(responseLogin.message))
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-                emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(e.message.toString()))
-            }
-        }
+//    fun userLogin(
+//        email: String,
+//        password: String,
+//
+//        ): LiveData<com.dicoding.picodiploma.testingwireless.utils.Result<Auth>> =
+//        liveData {
+//            emit(com.dicoding.picodiploma.testingwireless.utils.Result.Loading)
+//            val responseLogin = apiService.loginUser(User(email,password))
+////            try {
+////                if (responseLogin.status==1){
+////                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Success(responseLogin))
+////                } else {
+////                    emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(responseLogin.message))
+////                }
+////            } catch (e: HttpException) {
+////                e.printStackTrace()
+////                emit(com.dicoding.picodiploma.testingwireless.utils.Result.Failure(e.message.toString()))
+////            }
+//        }
 
     fun userRegist(
         nama: String,

@@ -1,7 +1,6 @@
 package com.dicoding.picodiploma.testingwireless.Preference
 
 import android.content.Context
-import com.dicoding.picodiploma.testingwireless.Model.Check
 import com.dicoding.picodiploma.testingwireless.Model.CheckBody
 import com.dicoding.picodiploma.testingwireless.Model.User
 
@@ -13,6 +12,7 @@ class AuthPreferences(context: Context) {
         editor.putString(NIM, value.nim)
         editor.putString(EMAIL, value.email)
         editor.putString(ID, value.userId)
+        editor.putString(STATUS, value.status)
         editor.apply()
     }
 
@@ -36,7 +36,8 @@ class AuthPreferences(context: Context) {
             nama = preferences.getString(NAME, "").toString(),
             nim = preferences.getString(NIM, "").toString(),
             email = preferences.getString(EMAIL, "").toString(),
-            password = preferences.getString(PASSWORD, "").toString()
+            password = preferences.getString(PASSWORD, "").toString(),
+            status = preferences.getString(STATUS, "").toString()
         )
 
     fun logout() {
@@ -66,13 +67,19 @@ class AuthPreferences(context: Context) {
         return preferences.getBoolean(CHECK, false)
     }
 
+    fun setStatus(value:String) {
+        val editor = preferences.edit()
+        editor.putString(STATUS, value)
+        editor.apply()
+    }
+
     fun getIdLoc(): String? {
         return preferences.getString(ID_MAPS, "")
     }
     fun checkOut() {
         val editor = preferences.edit()
-        editor.remove("ID_MAPS").apply()
-        editor.remove("CHECK").apply()
+        editor.remove(ID_MAPS).apply()
+        editor.remove(CHECK).apply()
     }
 
     companion object {
@@ -85,5 +92,6 @@ class AuthPreferences(context: Context) {
         private const val LOGIN = "login"
         private const val CHECK = "check"
         private const val ID_MAPS = "id_wirelessmaps"
+        private const val STATUS = "status"
     }
 }

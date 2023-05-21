@@ -5,17 +5,17 @@ import com.google.gson.annotations.SerializedName
 data class Home(
 
 
-    @field:SerializedName("restaurant")
-    val body: Body,
+    @field:SerializedName("data")
+    val data: Body,
 
-    @field:SerializedName("error")
-    val error: Boolean,
+    @field:SerializedName("status")
+    val status: Int,
 
     @field:SerializedName("message")
     val message: String
 )
 
-annotation class Body(
+data class Body(
 
 
     @field:SerializedName("nama")
@@ -24,8 +24,14 @@ annotation class Body(
     @field:SerializedName("nim")
     val nim: String,
 
+    @field:SerializedName("status")
+    val status: String,
+
     @field:SerializedName("id_user")
-    val id: String
+    val id: String,
+
+    @field:SerializedName("id_maps")
+    var id_maps: String? = null
 )
 
 

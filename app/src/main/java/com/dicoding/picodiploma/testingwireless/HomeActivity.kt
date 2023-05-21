@@ -95,10 +95,15 @@ class HomeActivity : AppCompatActivity() {
         }
 
         preferences = AuthPreferences(this)
+        preferences.setStatusCheck(false)
         userId = preferences.getId()!!
-        findRestaurant(userId)
-
+        if (preferences.getUser().status == "Online"){
+            preferences.setStatusCheck(true)
+        }
         statusCheck = preferences.getStatusCheck()
+        mapsId = preferences.getIdLoc()!!
+
+        findRestaurant(userId)
 
         binding.checkIn.setOnClickListener {
             val intent = Intent(this, MapsActivity::class.java)
@@ -136,8 +141,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
-    private fun findRestaurant(userId : String) {
-        val client = ApiConfig.getApiService().getDetailUser(userId)
+    private fun findRestaurant(id : String) {
+        val client = ApiConfig.getApiService().getDetailUser(id)
         client.enqueue(object : Callback<Home> {
             override fun onResponse(
                 call: Call<Home>,
@@ -145,10 +150,28 @@ class HomeActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
+                    Log.i("responsehome",responseBody.toString())
                     if (responseBody != null) {
-
-                        binding.tvNama.text=preferences.getUser().nama
-                        binding.tvNim.text=preferences.getUser().nim
+                        binding.tvNama.text= responseBody.data?.nama ?: preferences.getUser().nama
+                        binding.tvNim.text= responseBody.data?.nim ?: preferences.getUser().nim
+                        val idmaps = responseBody.data?.id_maps
+                        if (idmaps != null){
+                            mapsId = idmaps
+                            userId = preferences.getId().toString()
+                            val check = CheckBody(
+                                userId,
+                                mapsId
+                            )
+                            preferences.setCheck(check)
+                            Log.i("check",preferences.getIdLoc().toString())
+                        }
+                        val status = responseBody.data?.status
+                        if (status == "Online") {
+                            preferences.setStatusCheck(true)
+                        } else if (status == "Offline") {
+                            preferences.setStatusCheck(false)
+                        }
+                        Log.i("check1",preferences.getIdLoc().toString())
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
@@ -188,7 +211,6 @@ class HomeActivity : AppCompatActivity() {
         dialogFragment.show(supportFragmentManager,"PopUpDialog")
     }
     private fun checkOut() {
-        mapsId = preferences.getIdLoc()!!
         viewModel.getCheckOut( id_user = userId, id_wirelessmaps = mapsId)
             .observe(this) { response ->
                 if (response != null) {
@@ -201,6 +223,8 @@ class HomeActivity : AppCompatActivity() {
                             binding.progressBar.visibility = View.GONE
                             preferences.checkOut()
                             preferences.setStatusCheck(false)
+                            preferences.setStatus("Offline")
+                            Log.i("check3",preferences.getIdLoc().toString())
                             statusCheck = preferences.getStatusCheck()
                             showDialog(DialogType.SUCCESS,"Anda Telah Check Out")
                             Toast.makeText(
@@ -214,8 +238,8 @@ class HomeActivity : AppCompatActivity() {
 
                         is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
                             binding.progressBar.visibility = View.GONE
-                            Toast.makeText(this, response.error, Toast.LENGTH_SHORT).show()
-                            showDialog(DialogType.ERROR,response.error)
+                            Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                            showDialog(DialogType.ERROR,response.message)
                         }
                     }
                 }
