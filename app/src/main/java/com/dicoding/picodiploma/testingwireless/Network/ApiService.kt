@@ -10,9 +10,9 @@ import retrofit2.http.Query
 interface ApiService {
     //        @FormUrlEncoded
     @POST("user/login")
-    suspend fun loginUser(
+    fun loginUser(
         @retrofit2.http.Body user: User?
-    ): Auth
+    ): Call<Auth>
 
     @POST("user/insert")
     suspend fun insertUser(

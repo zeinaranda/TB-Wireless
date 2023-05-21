@@ -9,11 +9,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.DialogFragment
 import com.dicoding.picodiploma.testingwireless.Model.User
 import com.dicoding.picodiploma.testingwireless.Preference.AuthPreferences
 import com.dicoding.picodiploma.testingwireless.ViewModel.LoginViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.LoginViewModelFactory
+import com.dicoding.picodiploma.testingwireless.data.DialogType
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityLoginBinding
+import com.dicoding.picodiploma.testingwireless.dialog.PopupDialog
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var preferences: AuthPreferences
@@ -56,47 +59,55 @@ class LoginActivity : AppCompatActivity() {
 
     private fun initAction() {
         binding.btnLogin.setOnClickListener {
+            Log.i("kepencet","kan")
             handle()
         }
     }
 
     fun handle() {
-        viewModel.getLogin(
-            email = binding.etEmail.text.toString(),
-            password = binding.etPass.text.toString()
-        ).observe(this, { response ->
-            if (response != null) {
-                Log.i("isi response", response.toString())
-                when (response) {
-                    is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-
-                        val user = User(
-                            response.data.data.email,
-                            response.data.data.password,
-                            response.data.data.nama,
-                            response.data.data.nim,
-                            response.data.data.userId
-                        )
-                        preferences.setUser(user)
-                        preferences.setStatusLogin(true)
-                        val savedUser = preferences.setUser(user)
-                        Log.i("savedUser", savedUser.toString())
-                        startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
-                        finish()
-                        Toast.makeText(applicationContext, "Login Berhasil", Toast.LENGTH_SHORT)
-                            .show()
-
-                    }
-                    is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, "Login Gagal", Toast.LENGTH_SHORT).show()
-                    }
-                }
+        viewModel.loginUser(email = binding.etEmail.text.toString(),
+            password = binding.etPass.text.toString())
+        viewModel.getLogin().observe(this) {
+            Log.i("aa",it.toString())
+            if (it != null) {
+                    Log.i("status",it.status.toString())
+                    val user = User(
+                        it.data.email,
+                        it.data.password,
+                        it.data.nama,
+                        it.data.nim,
+                        it.data.userId,
+                        it.data.status,
+                    )
+                    preferences.setUser(user)
+                    preferences.setStatusLogin(true)
+                    val savedUser = preferences.setUser(user)
+                    Log.i("savedUser", savedUser.toString())
+                    startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                    finish()
+                    Toast.makeText(applicationContext, "Login Berhasil", Toast.LENGTH_SHORT)
+                        .show()
             }
-        })
+        }
+        viewModel.error.observe(this){ error ->
+            error.handle { showDialog(DialogType.ERROR,"Email atau Password Salah") }
+        }
+        viewModel.isLoading.observe(this) { loading ->
+            loading.handle { showLoading(it) }
+        }
+    }
+    private fun showDialog(type: DialogType, msg:String) {
+        val callback = object : PopupDialog.DialogCallback {
+            override fun dismissDialog(dialog: DialogFragment) {
+                // Tindakan yang ingin dilakukan ketika dialog ditutup
+                dialog.dismiss()
+            }
+        }
+        val dialogFragment = PopupDialog(type, msg, callback)
+        dialogFragment.show(supportFragmentManager,"PopUpDialog")
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 }

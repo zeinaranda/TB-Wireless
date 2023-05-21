@@ -1,6 +1,5 @@
-package com.dicoding.picodiploma.testingwireless
+package com.dicoding.picodiploma.testingwireless.Receiver
 
-import android.app.Activity
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
@@ -8,14 +7,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
-import android.view.LayoutInflater
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.dicoding.picodiploma.testingwireless.databinding.BottomSheetBinding
+import com.dicoding.picodiploma.testingwireless.R
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofenceStatusCodes
 import com.google.android.gms.location.GeofencingEvent
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 
 class GeofenceBroadcastReceiver() : BroadcastReceiver() {

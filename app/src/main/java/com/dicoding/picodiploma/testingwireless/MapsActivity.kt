@@ -10,12 +10,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.location.Location
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -23,14 +20,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.dicoding.picodiploma.testingwireless.Model.CheckBody
 import com.dicoding.picodiploma.testingwireless.Model.LatLong
-import com.dicoding.picodiploma.testingwireless.Model.User
 import com.dicoding.picodiploma.testingwireless.Preference.AuthPreferences
+import com.dicoding.picodiploma.testingwireless.Receiver.GeofenceBroadcastReceiver
 import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModel
 import com.dicoding.picodiploma.testingwireless.ViewModel.MapsViewModelFactory
 import com.dicoding.picodiploma.testingwireless.data.DialogType
@@ -42,15 +38,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.dicoding.picodiploma.testingwireless.databinding.ActivityMapsBinding
-import com.dicoding.picodiploma.testingwireless.databinding.BottomSheetBinding
-import com.dicoding.picodiploma.testingwireless.databinding.DialogCustomBinding
 import com.dicoding.picodiploma.testingwireless.dialog.PopupDialog
 import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -163,7 +156,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, response.error, Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -350,6 +343,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                             )
                             preferences.setCheck(check)
                             preferences.setStatusCheck(true)
+                            preferences.setStatus("Online")
                             val callback = object : PopupDialog.DialogCallback {
                                 override fun dismissDialog(dialog: DialogFragment) {
                                     // Tindakan yang ingin dilakukan ketika dialog ditutup
@@ -358,8 +352,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                 }
                             }
                             showDialog(DialogType.SUCCESS,"Anda Berhasil Check In",callback)
-//                            val savedCheck = preferences.setCheck(check)
-//                            Log.i("savedCheck", savedCheck.toString())
                             Toast.makeText(
                                 applicationContext,
                                 "Check In Berhasil",
@@ -375,10 +367,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                                     dialog.dismiss()
                                 }
                             }
-                            showDialog(DialogType.ERROR,response.error,callback)
+                            showDialog(DialogType.ERROR,response.message,callback)
                             Toast.makeText(
                                 this@MapsActivity,
-                                response.error,
+                                response.message,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
