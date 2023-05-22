@@ -10,6 +10,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -140,26 +142,29 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         checkInButton.setOnClickListener {
             showDialog(DialogType.ERROR,"Anda Diluar Area Absensi",callback)
         }
+        if (isNetworkAvailable()) {
+            viewModel.getMarker().observe(this) { response ->
+                if (response != null) {
+                    when (response) {
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                        }
 
-        viewModel.getMarker().observe(this) { response ->
-            if (response != null) {
-                when (response) {
-                    is com.dicoding.picodiploma.testingwireless.utils.Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+                            listJurusan = response.data.data
+                            showMarker(listJurusan)
+                        }
 
-                    is com.dicoding.picodiploma.testingwireless.utils.Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        listJurusan = response.data.data
-                        showMarker(listJurusan)
-                    }
-
-                    is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
-                        binding.progressBar.visibility = View.GONE
-                        Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                        is com.dicoding.picodiploma.testingwireless.utils.Result.Failure -> {
+                            binding.progressBar.visibility = View.GONE
+                            Toast.makeText(this, response.message, Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
+        }else {
+            Toast.makeText(this, "Tidak ada koneksi internet", Toast.LENGTH_SHORT).show()
         }
 
         val mapFragment = supportFragmentManager
@@ -377,5 +382,14 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
             }
+    }
+
+
+    // Metode untuk memeriksa ketersediaan koneksi internet
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
     }
 }

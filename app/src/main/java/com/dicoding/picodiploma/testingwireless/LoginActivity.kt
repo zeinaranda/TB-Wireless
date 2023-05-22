@@ -1,6 +1,9 @@
 package com.dicoding.picodiploma.testingwireless
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -93,9 +96,24 @@ class LoginActivity : AppCompatActivity() {
             error.handle { showDialog(DialogType.ERROR,"Email atau Password Salah") }
         }
         viewModel.isLoading.observe(this) { loading ->
-            loading.handle { showLoading(it) }
+            if (isNetworkAvailable()) {
+                loading.handle { showLoading(it) }
+            } else {
+                loading.handle { showLoading(false) }
+                Toast.makeText(applicationContext, "Tidak ada koneksi internet", Toast.LENGTH_SHORT)
+                    .show()
+            }
         }
     }
+
+    // Metode untuk memeriksa ketersediaan koneksi internet
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager =
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    }
+
     private fun showDialog(type: DialogType, msg:String) {
         val callback = object : PopupDialog.DialogCallback {
             override fun dismissDialog(dialog: DialogFragment) {
