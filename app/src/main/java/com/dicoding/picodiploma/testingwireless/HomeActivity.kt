@@ -100,7 +100,7 @@ class HomeActivity : AppCompatActivity() {
         if (preferences.getUser().status == "Online"){
             preferences.setStatusCheck(true)
         }
-        statusCheck = preferences.getStatusCheck()
+        Log.i("checkya",preferences.getStatusCheck().toString())
         mapsId = preferences.getIdLoc()!!
 
         findRestaurant(userId)
@@ -110,6 +110,7 @@ class HomeActivity : AppCompatActivity() {
             startActivity(intent)
         }
         binding.checkOut.setOnClickListener {
+            statusCheck = preferences.getStatusCheck()
             if (statusCheck) {
                 checkOut()
             } else {
@@ -172,6 +173,7 @@ class HomeActivity : AppCompatActivity() {
                             preferences.setStatusCheck(false)
                         }
                         Log.i("check1",preferences.getIdLoc().toString())
+                        Log.i("checkstatus",status.toString())
                     }
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
