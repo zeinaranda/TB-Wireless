@@ -83,7 +83,9 @@ class HistoryActivity : AppCompatActivity() {
 
         binding.apply {
             rvUsers.setHasFixedSize(true)
-            rvUsers.layoutManager = LinearLayoutManager(this@HistoryActivity)
+            rvUsers.layoutManager = LinearLayoutManager(this@HistoryActivity).apply {
+                reverseLayout = true
+            }
             rvUsers.adapter = adapter
         }
 
@@ -91,8 +93,7 @@ class HistoryActivity : AppCompatActivity() {
         viewModel.setStories(userId!!)
         viewModel.getStories().observe(this, {
             if (it != null) {
-                adapter.setList(it.sortedByDescending { it.tanggal })
-                showRecyclerList()
+                adapter.setList(it.sortedBy { it.tanggal })
             }
         })
         viewModel.isLoading.observe(this, {
@@ -110,18 +111,6 @@ class HistoryActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showRecyclerList() {
-
-//        adapter.setOnItemClickCallback(object : StoryAdapter.OnItemClickCallback {
-//            override fun onItemClicked(data: Story) {
-//                val intentToDetail = Intent(this@MainActivity, DetailActivity::class.java)
-//                intentToDetail.putExtra(DetailActivity.NAME, data.name)
-//                intentToDetail.putExtra(DetailActivity.DESC, data.description)
-//                intentToDetail.putExtra(DetailActivity.PHOTO, data.photoUrl)
-//                startActivity(intentToDetail)
-//            }
-//        })
-    }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
@@ -132,58 +121,3 @@ class HistoryActivity : AppCompatActivity() {
         viewModel.setStories(userId!!)
     }
 }
-
-
-
-//class HistoryActivity : AppCompatActivity() {
-//    lateinit var toggle : ActionBarDrawerToggle
-//    private lateinit var preferences: AuthPreferences
-//    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_history)
-//        val toolbar: Toolbar = findViewById(R.id.toolbar)
-//        val drawerLayout : DrawerLayout = findViewById(R.id.drawerLayout)
-//        val navView : NavigationView = findViewById(R.id.nav_view)
-//        toolbar.title = "Riwayat Absensi"
-//        setSupportActionBar(toolbar)
-//        toggle = ActionBarDrawerToggle(this,drawerLayout,R.string.open,R.string.close)
-//        drawerLayout.addDrawerListener(toggle)
-//        toggle.syncState()
-//
-//        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-//        preferences = AuthPreferences(this)
-//
-//        navView.setNavigationItemSelectedListener {
-//            when(it.itemId){
-//                R.id.nav_home -> {
-//                    val i = Intent(this, HomeActivity::class.java)
-//                    startActivity(i)
-//                    finish()
-//                    true
-//                }
-//                R.id.nav_history -> {
-//                    drawerLayout.closeDrawer(navView)
-//                    true
-//                }
-//                R.id.nav_logout -> {
-//                    preferences.logout()
-//                    val i = Intent(this, LoginActivity::class.java)
-//                    startActivity(i)
-//                    finish()
-//                    true
-//                }
-//            }
-//
-//            true
-//        }
-//    }
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//
-//        if (toggle.onOptionsItemSelected(item)){
-//            return true
-//        }
-//
-//        return super.onOptionsItemSelected(item)
-//>>>>>>> 38d4f23d550fb3ec5c4410c9aef60c7aea4b0841
-//    }
-//}
